@@ -13,6 +13,7 @@ import demo.ui.utils.Session;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -53,15 +54,30 @@ public class App extends Application {
         table.setPageCallback((pageIndex) -> {
             Response<PageDto<CustomerDto>> res =
                     session.get("/customer/getAllCustomers",
-                            Map.of("page", String.valueOf(pageIndex), "size", "3"));
+                            Map.of("page", String.valueOf(pageIndex), "size", "1"));
             return res.getData(PageDto.class);
         }); // Set page callback, return PageDto<CustomerDto> object
 
         root.getChildren().add(table);
 
+        Button button = new Button("Show table in another style!");
+        button.setLayoutX(0);
+        button.setLayoutY(400);
+        button.setOnAction((event) -> {
+            table.setPageCallback((pageIndex) -> {
+                Response<PageDto<CustomerDto>> res =
+                        session.get("/customer/getAllCustomers",
+                                Map.of("page", String.valueOf(pageIndex), "size", "5"));
+                return res.getData(PageDto.class);
+            }); // Set page callback, return PageDto<CustomerDto> object
+        });
+
+        root.getChildren().add(button);
+
         Scene scene = new Scene(root, 640, 480);
         stage.setScene(scene);
         stage.show();
+
     }
 
 
