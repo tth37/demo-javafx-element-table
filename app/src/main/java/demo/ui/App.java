@@ -11,14 +11,13 @@ import demo.ui.dto.PageDto;
 import demo.ui.utils.Response;
 import demo.ui.utils.Session;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
-import javax.swing.text.Element;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -42,21 +41,37 @@ public class App extends Application {
 
         AnchorPane root = new AnchorPane();
 
-        ElementTable<CustomerDto> table = new ElementTable<>();
+        ElementTable<CustomerDto> table = new ElementTable<>(CustomerDto.class);
 
         table.setPrefSize(600, 400);
+        table.setDialogSize(300, 200); // Set dialog size
         table.setMaxPageIndicatorCount(3); // Set max page indicator count
+
         table.setColumns(List.of(
                 new Pair<>("Id", "id"),
                 new Pair<>("Name", "name"),
-                new Pair<>("Email", "email")
+                new Pair<>("E-mail", "email")
         )); // Set columns
+
         table.setPageCallback((pageIndex) -> {
             Response<PageDto<CustomerDto>> res =
                     session.get("/customer/getAllCustomers",
                             Map.of("page", String.valueOf(pageIndex), "size", "1"));
             return res.getData(PageDto.class);
         }); // Set page callback, return PageDto<CustomerDto> object
+
+        table.setDoubleClickRenderer((customer) -> {
+            AnchorPane dialogRoot = new AnchorPane();
+
+            Label label = new Label("Customer ID: " + customer.id + "\n" +
+                    "Customer Name: " + customer.name + "\n" +
+                    "Customer E-mail: " + customer.email);
+            label.setLayoutX(0);
+            label.setLayoutY(0);
+            dialogRoot.getChildren().add(label);
+
+            return dialogRoot;
+        }); // Set double-click renderer, return AnchorPane object as dialog root
 
         root.getChildren().add(table);
 

@@ -2,6 +2,7 @@ package demo.ui.utils;
 
 import java.net.URI;
 import java.net.http.HttpClient;
+import java.net.http.HttpConnectTimeoutException;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
@@ -56,6 +57,7 @@ public class Session {
         try {
             return this.request(url, "GET", null, params);
         } catch (Exception e) {
+            System.err.println(e.toString());
             return new Response<>(600, null, "Connection Error");
         }
     }
@@ -64,6 +66,7 @@ public class Session {
         try {
             return this.request(url, "POST", body, Map.of());
         } catch (Exception e) {
+            System.err.println(e.toString());
             return new Response<>(600, null, "Connection Error");
         }
     }
@@ -72,6 +75,7 @@ public class Session {
         try {
             return this.request(url, "PATCH", body, Map.of());
         } catch (Exception e) {
+            System.err.println(e.toString());
             return new Response<>(600, null, "Connection Error");
         }
     }
@@ -80,6 +84,7 @@ public class Session {
         try {
             return this.request(url, "DELETE", body, Map.of());
         } catch (Exception e) {
+            System.err.println(e.toString());
             return new Response<>(600, null, "Connection Error");
         }
     }
